@@ -1,3 +1,5 @@
+// Compare 2 STL meshes/ using vtkNew
+
 #include "vtkAutoInit.h" 
 VTK_MODULE_INIT(vtkRenderingOpenGL2); // VTK was built with vtkRenderingOpenGL2
 VTK_MODULE_INIT(vtkInteractionStyle);
