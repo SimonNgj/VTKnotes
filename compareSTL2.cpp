@@ -1,173 +1,225 @@
-//#include "vtkAutoInit.h" 
-//VTK_MODULE_INIT(vtkRenderingOpenGL2); // VTK was built with vtkRenderingOpenGL2
-//VTK_MODULE_INIT(vtkInteractionStyle);
-//VTK_MODULE_INIT(vtkRenderingFreeType);
-//
-//#include <vtkActor.h>
-//#include <vtkBox.h>
-//#include <vtkCamera.h>
-//#include <vtkColor.h>
-//#include <vtkContourFilter.h>
-//#include <vtkImplicitBoolean.h>
-//#include <vtkNamedColors.h>
-//#include <vtkNew.h>
-//#include <vtkPolyDataMapper.h>
-//#include <vtkProperty.h>
-//#include <vtkRenderWindow.h>
-//#include <vtkRenderWindowInteractor.h>
-//#include <vtkRenderer.h>
-//#include <vtkSampleFunction.h>
-//#include <vtkSphere.h>
-//#include <vtkTriangleFilter.h>
-//#include <vtkCleanPolyData.h>
-//#include <vtkPolyDataReader.h>
-//#include <vtkSTLReader.h>
-//#include <vtksys/SystemTools.hxx>
-//#include <vtkInteractorStyleTrackballCamera.h>
-//#include <vtkSTLWriter.h>
-//#include <vtkSphereSource.h>
-//
-//vtkSmartPointer<vtkPolyData> ReadPolyData(const char* fileName)
-//{
-//	vtkSmartPointer<vtkPolyData> polyData;
-//	std::string extension = vtksys::SystemTools::GetFilenameExtension(std::string(fileName));
-//
-//	if (extension == ".STL")
-//	{
-//		vtkSmartPointer<vtkSTLReader> reader = vtkSmartPointer<vtkSTLReader>::New();
-//		reader->SetFileName(fileName);
-//		reader->Update();
-//		polyData = reader->GetOutput();
-//	}
-//	else
-//	{
-//		vtkSmartPointer<vtkSphereSource> source = vtkSmartPointer<vtkSphereSource>::New();
-//		source->Update();
-//		polyData = source->GetOutput();
-//	}
-//	return polyData;
-//}
-//
-//int main(int argc, char* argv[])
-//{
-//	// Define colors
-//	vtkNew<vtkNamedColors> colors;
-//	vtkColor3d actorColor = colors->GetColor3d("AliceBlue");
-//	vtkColor3d EdgeColour = colors->GetColor3d("SteelBlue");
-//	vtkColor3d BackgroundColour = colors->GetColor3d("Silver");
-//
-//	// create a sphere
-//	vtkNew<vtkSphere> sphere;
-//	sphere->SetCenter(1.0, 0.0, 0.0);
-//	sphere->SetRadius(1);
-//
-//	// create a box
-//	vtkNew<vtkBox> box;
-//	box->SetBounds(-1, 1, -1, 1, -1, 1);
-//
-//
-//	////vtkNew<vtkSTLReader> reader1;
-//	////reader1->SetFileName("../files/block.STL");
-//	////reader1->Update();
-//
-//	////vtkNew<vtkSTLReader> reader2;
-//	////reader2->SetFileName("../files/arrow.STL");
-//	////reader2->Update();
-//
-//	//vtkSmartPointer<vtkPolyData> input1;
-//	//vtkSmartPointer<vtkPolyData> input2;
-//
-//	//vtkSmartPointer<vtkPolyData> poly1;
-//	//vtkSmartPointer<vtkPolyData> poly2;
-//
-//	//poly1 = ReadPolyData("../files/block.STL");
-//	//poly2 = ReadPolyData("../files/arrow.STL");
-//
-//	//vtkSmartPointer<vtkTriangleFilter> tri1 = vtkSmartPointer<vtkTriangleFilter>::New();
-//	//tri1->SetInputData(poly1);
-//	//vtkSmartPointer<vtkCleanPolyData> clean1 = vtkSmartPointer<vtkCleanPolyData>::New();
-//	//clean1->SetInputConnection(tri1->GetOutputPort());
-//	//clean1->Update();
-//	//input1 = clean1->GetOutput();
-//
-//	//vtkSmartPointer<vtkTriangleFilter> tri2 = vtkSmartPointer<vtkTriangleFilter>::New();
-//	//tri2->SetInputData(poly2);
-//	//tri2->Update();
-//	//vtkSmartPointer<vtkCleanPolyData> clean2 = vtkSmartPointer<vtkCleanPolyData>::New();
-//	//clean2->SetInputConnection(tri2->GetOutputPort());
-//	//clean2->Update();
-//	//input2 = clean2->GetOutput();
-//
-//
-//
-//
-//
-//	// combine the two implicit functions
-//	vtkSmartPointer<vtkImplicitBoolean> boolean;
-//	boolean->SetOperationTypeToDifference();
-//	//boolean->SetOperationTypeToUnion();
-//	// boolean->SetOperationTypeToIntersection();
-//	
-//	//boolean->AddFunction(sphere);
-//	//boolean->AddFunction(box);
-//
-//	boolean->AddFunction(box);
-//	boolean->AddFunction(sphere);
-//	
-//	//boolean->AddFunction(reader2->GetOutputPort());
-//
-//
-//	// The sample function generates a distance function from the implicit
-//	// function.This is then contoured to get a polygonal surface.
-//	vtkNew<vtkSampleFunction> sample;
-//	sample->SetImplicitFunction(boolean);
-//	sample->SetModelBounds(-1, 2, -1, 1, -1, 1);
-//	sample->SetSampleDimensions(40, 40, 40);
-//	sample->ComputeNormalsOff();
-//
-//	// contour
-//	vtkNew<vtkContourFilter> surface;
-//	surface->SetInputConnection(sample->GetOutputPort());
-//	surface->SetValue(0, 0.0);
-//
-//	vtkNew<vtkSTLWriter> stlWriter;
-//	stlWriter->SetFileName("../files/compareSTL.stl");
-//	stlWriter->SetInputConnection(surface->GetOutputPort());
-//	stlWriter->Write();
-//
-//	//////////////////////////
-//
-//	//////////////////////////
-//
-//	// Create a mapper and an actor
-//	vtkNew<vtkPolyDataMapper> mapper;
-//	mapper->SetInputConnection(surface->GetOutputPort());
-//	mapper->ScalarVisibilityOff();
-//	vtkNew<vtkActor> actor;
-//	actor->SetMapper(mapper);
-//	actor->GetProperty()->EdgeVisibilityOn();
-//	actor->GetProperty()->SetColor(actorColor.GetData());
-//	actor->GetProperty()->SetEdgeColor(EdgeColour.GetData());
-//
-//	// A renderer and render window
-//	vtkNew<vtkRenderer> renderer;
-//	renderer->SetBackground(BackgroundColour.GetData());
-//	vtkNew<vtkRenderWindow> renderWindow;
-//	renderWindow->AddRenderer(renderer);
-//	renderWindow->SetWindowName("BooleanOperationImplicitFunctions");
-//
-//	vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
-//	renderWindowInteractor->SetRenderWindow(renderWindow);
-//
-//	// add the actor
-//	renderer->AddActor(actor);
-//
-//	// Start
-//	//renderer->GetActiveCamera()->SetPosition(5.0, -4.0, 1.6);
-//	//renderer->GetActiveCamera()->SetViewUp(0.1, 0.5, 0.9);
-//	//renderer->GetActiveCamera()->SetDistance(6.7);
-//	renderWindow->Render();
-//	renderWindowInteractor->Start();
-//
-//	return EXIT_SUCCESS;
-//}
+#include "vtkAutoInit.h" 
+VTK_MODULE_INIT(vtkRenderingOpenGL2); // VTK was built with vtkRenderingOpenGL2
+VTK_MODULE_INIT(vtkInteractionStyle);
+VTK_MODULE_INIT(vtkRenderingFreeType);
+
+#include <vtkActor.h>
+#include <vtkBooleanOperationPolyDataFilter.h>
+#include <vtkCleanPolyData.h>
+#include <vtkNamedColors.h>
+#include <vtkNew.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+#include <vtkTriangleFilter.h>
+
+#include <vtkBYUReader.h>
+#include <vtkOBJReader.h>
+#include <vtkPLYReader.h>
+#include <vtkPolyDataReader.h>
+#include <vtkSTLReader.h>
+#include <vtkXMLPolyDataReader.h>
+
+#include <vtkSphereSource.h>
+#include <vtksys/SystemTools.hxx>
+
+#include <vtkCamera.h>
+namespace {
+    vtkSmartPointer<vtkPolyData> ReadPolyData(const char* fileName);
+    void PositionCamera(vtkRenderer* renderer, double* viewUp, double* position);
+} // namespace
+
+int main(int argc, char* argv[])
+{
+    vtkSmartPointer<vtkPolyData> input1;
+    vtkSmartPointer<vtkPolyData> input2;
+
+    std::string operation("difference");
+
+    //if (argc == 4)
+    //{
+        auto poly1 = ReadPolyData("../files/block.STL");
+        vtkNew<vtkTriangleFilter> tri1;
+        tri1->SetInputData(poly1);
+        vtkNew<vtkCleanPolyData> clean1;
+        clean1->SetInputConnection(tri1->GetOutputPort());
+        clean1->Update();
+        input1 = clean1->GetOutput();
+
+        auto poly2 = ReadPolyData("../files/exp2sub.STL");
+        vtkNew<vtkTriangleFilter> tri2;
+        tri2->SetInputData(poly2);
+        tri2->Update();
+        vtkNew<vtkCleanPolyData> clean2;
+        clean2->SetInputConnection(tri2->GetOutputPort());
+        clean2->Update();
+        input2 = clean2->GetOutput();
+        //operation = argv[2];
+    //}
+    //else
+    //{
+    //    vtkNew<vtkSphereSource> sphereSource1;
+    //    sphereSource1->SetCenter(0.25, 0, 0);
+    //    sphereSource1->SetPhiResolution(21);
+    //    sphereSource1->SetThetaResolution(21);
+    //    sphereSource1->Update();
+    //    input1 = sphereSource1->GetOutput();
+
+    //    vtkNew<vtkSphereSource> sphereSource2;
+    //    sphereSource2->Update();
+    //    input2 = sphereSource2->GetOutput();
+
+    //    if (argc == 2)
+    //    {
+    //        operation = argv[1];
+    //    }
+    //}
+
+    vtkNew<vtkNamedColors> colors;
+
+    vtkNew<vtkPolyDataMapper> input1Mapper;
+    input1Mapper->SetInputData(input1);
+    input1Mapper->ScalarVisibilityOff();
+    vtkNew<vtkActor> input1Actor;
+    input1Actor->SetMapper(input1Mapper);
+    input1Actor->GetProperty()->SetDiffuseColor(
+        colors->GetColor3d("Tomato").GetData());
+    input1Actor->GetProperty()->SetSpecular(0.6);
+    input1Actor->GetProperty()->SetSpecularPower(20);
+    input1Actor->SetPosition(input1->GetBounds()[1] - input1->GetBounds()[0], 0, 0);
+    vtkNew<vtkPolyDataMapper> input2Mapper;
+    input2Mapper->SetInputData(input2);
+    input2Mapper->ScalarVisibilityOff();
+    vtkNew<vtkActor> input2Actor;
+    input2Actor->SetMapper(input2Mapper);
+    input2Actor->GetProperty()->SetDiffuseColor(
+        colors->GetColor3d("Mint").GetData());
+    input2Actor->GetProperty()->SetSpecular(0.6);
+    input2Actor->GetProperty()->SetSpecularPower(20);
+    input2Actor->SetPosition(-(input1->GetBounds()[1] - input1->GetBounds()[0]), 0, 0);
+
+    vtkNew<vtkBooleanOperationPolyDataFilter> booleanOperation;
+    if (operation == "union")
+    {
+        booleanOperation->SetOperationToUnion();
+    }
+    else if (operation == "intersection")
+    {
+        booleanOperation->SetOperationToIntersection();
+    }
+    else if (operation == "difference")
+    {
+        booleanOperation->SetOperationToDifference();
+    }
+    else
+    {
+        std::cout << "Unknown operation: " << operation << std::endl;
+        return EXIT_FAILURE;
+    }
+    booleanOperation->SetInputData(0, input1);
+    booleanOperation->SetInputData(1, input2);
+
+    vtkNew<vtkPolyDataMapper> booleanOperationMapper;
+    booleanOperationMapper->SetInputConnection(booleanOperation->GetOutputPort());
+    booleanOperationMapper->ScalarVisibilityOff();
+
+    vtkNew<vtkActor> booleanOperationActor;
+    booleanOperationActor->SetMapper(booleanOperationMapper);
+    booleanOperationActor->GetProperty()->SetDiffuseColor(
+        colors->GetColor3d("Banana").GetData());
+    booleanOperationActor->GetProperty()->SetSpecular(.6);
+    booleanOperationActor->GetProperty()->SetSpecularPower(20);
+
+    vtkNew<vtkRenderer> renderer;
+    renderer->AddViewProp(input1Actor);
+    renderer->AddViewProp(input2Actor);
+    renderer->AddViewProp(booleanOperationActor);
+    renderer->SetBackground(colors->GetColor3d("Silver").GetData());
+    vtkNew<vtkRenderWindow> renderWindow;
+    renderWindow->AddRenderer(renderer);
+    renderWindow->SetSize(640, 480);
+    renderWindow->SetWindowName("BooleanOperationPolyDataFilter");
+
+    double viewUp[3] = { 0.0, 0.0, 1.0 };
+    double position[3] = { 0.0, -1.0, 0.0 };
+    PositionCamera(renderer, viewUp, position);
+    renderer->GetActiveCamera()->Dolly(1.4);
+    renderer->ResetCameraClippingRange();
+
+    vtkNew<vtkRenderWindowInteractor> renWinInteractor;
+    renWinInteractor->SetRenderWindow(renderWindow);
+
+    renderWindow->Render();
+    renWinInteractor->Start();
+
+    return EXIT_SUCCESS;
+}
+namespace {
+    vtkSmartPointer<vtkPolyData> ReadPolyData(const char* fileName)
+    {
+        vtkSmartPointer<vtkPolyData> polyData;
+        std::string extension =
+            vtksys::SystemTools::GetFilenameExtension(std::string(fileName));
+        if (extension == ".ply")
+        {
+            vtkNew<vtkPLYReader> reader;
+            reader->SetFileName(fileName);
+            reader->Update();
+            polyData = reader->GetOutput();
+        }
+        else if (extension == ".vtp")
+        {
+            vtkNew<vtkXMLPolyDataReader> reader;
+            reader->SetFileName(fileName);
+            reader->Update();
+            polyData = reader->GetOutput();
+        }
+        else if (extension == ".obj")
+        {
+            vtkNew<vtkOBJReader> reader;
+            reader->SetFileName(fileName);
+            reader->Update();
+            polyData = reader->GetOutput();
+        }
+        else if (extension == ".stl" || extension == ".STL")
+        {
+            vtkNew<vtkSTLReader> reader;
+            reader->SetFileName(fileName);
+            reader->Update();
+            polyData = reader->GetOutput();
+        }
+        else if (extension == ".vtk")
+        {
+            vtkNew<vtkPolyDataReader> reader;
+            reader->SetFileName(fileName);
+            reader->Update();
+            polyData = reader->GetOutput();
+        }
+        else if (extension == ".g")
+        {
+            vtkNew<vtkBYUReader> reader;
+            reader->SetGeometryFileName(fileName);
+            reader->Update();
+            polyData = reader->GetOutput();
+        }
+        else
+        {
+            vtkNew<vtkSphereSource> source;
+            source->Update();
+            polyData = source->GetOutput();
+        }
+        return polyData;
+    }
+
+    void PositionCamera(vtkRenderer* renderer, double* viewUp, double* position)
+    {
+        renderer->GetActiveCamera()->SetFocalPoint(0.0, 0.0, 0.0);
+        renderer->GetActiveCamera()->SetViewUp(viewUp);
+        renderer->GetActiveCamera()->SetPosition(position);
+        renderer->ResetCamera();
+        return;
+    }
+} // namespace
