@@ -1,3 +1,8 @@
+// Code to remove isolated pieces from a mesh
+// remove by number of faces: work
+// remove by diameter: an error with flag -> unsolved
+// Notes: Try remesh.cpp first and then edit it
+
 #include<vcg/complex/complex.h>
 
 #include<wrap/io_trimesh/import.h>
