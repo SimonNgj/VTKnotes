@@ -1,6 +1,8 @@
 // Code to remove isolated pieces from a mesh
 // remove by number of faces: work
-// remove by diameter: an error with flag -> unsolved
+// remove by diameter: an error with flag -> unsolved -> solved by adding:
+//	vcg::face::FFAdj<MyMesh>::FFAdj();
+//	vcg::tri::UpdateTopology<MyMesh>::FaceFace(original);
 // Notes: Try remesh.cpp first and then edit it
 
 #include<vcg/complex/complex.h>
@@ -50,6 +52,8 @@ int main(int argc, char** argv)
 	vcg::tri::io::Exporter<MyMesh>::Save(original, meshFilename2a.c_str());
 
  //   /////////////////////// Remove Isolated pieces (diameter) ////////////////////////
+//	vcg::face::FFAdj<MyMesh>::FFAdj();
+//	vcg::tri::UpdateTopology<MyMesh>::FaceFace(original);
  //   float minCC_d = 5;
  //   std::pair<int, int> delInfo_d = tri::Clean<MyMesh>::RemoveSmallConnectedComponentsDiameter(original, minCC_d);
  //   int delvert_diameter = tri::Clean<MyMesh>::RemoveUnreferencedVertex(original);
